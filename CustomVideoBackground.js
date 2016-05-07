@@ -17,10 +17,6 @@ function CustomVideoBackground(adConfig) {
 	this.subscribeToAfterCreateAdEvent();
 	this.subscribeToAfterExpandEvent();
 	this.subscribeToAfterCollapseEvent();
-	this.requested = false;
-	this.imageReady = false;
-	this.isWaiting = false;
-	this.isFirstLoad = true;
 
 	EBG.callSuperConstructor(CustomVideoBackground, this, [adConfig]);
 }
@@ -96,9 +92,11 @@ CustomVideoBackground.prototype = {
 				break;
 				case "collapseRequest":
 					console.log("collapseRequest",messageData);
+					SELF.onCollapseRequested();
 				break;
 				case "expansionRequest":
 					console.log("expansionRequest",messageData);
+					SELF.onExpandRequested();
 				break;
 			}
 
@@ -111,6 +109,7 @@ CustomVideoBackground.prototype = {
 		SELF.adDiv = SELF.displayWindow.document.getElementById(SELF._adConfig.placeHolderId);
 		SELF.adFrm = SELF.adDiv.getElementsByTagName("iframe")[0];
 		SELF.hostDiv = SELF.adDiv.parentNode;
+		SELF.eyeDiv = SELF.displayWindow.document.getElementById("eyeDiv");
 		
 	   	SELF.displayWindow.addEventListener("resize", function() {
 			SELF.onResize();
@@ -128,13 +127,11 @@ CustomVideoBackground.prototype = {
 			
 			//document.body.style.overflow = "hidden";
 			//SELF.panelDiv.style.display = "none";
-			var windowSize = SELF.getBrowserDimension();
-			// var winW = isNaN(window.innerWidth) ? window.clientWidth : window.innerWidth;
-			// var winH = isNaN(window.innerHeight) ? window.clientHeight : window.innerHeight;
-			
+			var windowSize = SELF.getBrowserDimension();			
 			var obj = {};
 			obj.browserWidth = windowSize.width;
 			obj.browserHeight = windowSize.height;
+			onj.adId = SELF._adConfig.adId;
 			SELF.sendMessageToCreative(	SELF.panelId, {type: "infoAd", data: obj});
 
 			SELF.setStyle(SELF.panelFrm, {
@@ -177,10 +174,7 @@ CustomVideoBackground.prototype = {
 	},
 	onResize:function(){
 		setTimeout(function(){
-			var windowSize = SELF.getBrowserDimension();
-			// var winW = isNaN(window.innerWidth) ? window.clientWidth : window.innerWidth;
-			// var winH = isNaN(window.innerHeight) ? window.clientHeight : window.innerHeight;
-			
+			var windowSize = SELF.getBrowserDimension();			
 			var obj = {};
 			obj.browserWidth = windowSize.width;
 			obj.browserHeight = windowSize.height;
@@ -207,6 +201,12 @@ CustomVideoBackground.prototype = {
 				visibility: "visible"
 			});
 		}, 50);
+	},
+	onExpandRequested:function(){
+
+	},
+	onCollapseRequested:function(){
+		
 	}
 }
 

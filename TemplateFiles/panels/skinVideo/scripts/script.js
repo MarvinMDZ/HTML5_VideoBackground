@@ -1,4 +1,4 @@
-var expansionDiv,closeButton,expandButton,clickthroughButton,videoContainer,video,audioButton,controlButton;
+var expansionDiv,closeButton,expandButton,clickthroughButton,videoContainer,staticImage,video,audioButton,controlButton,adId;
 
 
 function initializeCreative()
@@ -10,6 +10,7 @@ function initializeCreative()
 	audioButton = document.getElementById("audioButton");
 	controlButton = document.getElementById("controlButton");
 	clickthroughButton = document.getElementById("clickthroughButton");
+	staticImage = document.getElementById("staticImage");
 	videoContainer = document.getElementById("videoContainer");
 	video = document.getElementById("video");
 
@@ -27,7 +28,16 @@ function initializeCreative()
     video.addEventListener('ended',onVideoEnd);
     video.addEventListener('volumechange',setAudioImage);
 
-    video.play();
+    try{
+		adId = EB._adConfig.adId;
+	}catch(error){
+		adId = "35572581";
+	}
+	var itemName = adId+"_setDate";
+	localStorage.getItem(itemName,new Date());
+
+    startAd();
+    
 }
 
 function handleMessage(event){
@@ -42,8 +52,8 @@ function handleMessage(event){
 			break;
 		
 			case "infoAd":
-					var br_w = obj.data.browserWidth;
-					var br_h = obj.data.browserHeight;			
+					// var br_w = obj.data.browserWidth;
+					// var br_h = obj.data.browserHeight;
 			break;
 
 			case "expansionRequest":
@@ -56,16 +66,102 @@ function handleMessage(event){
 	}
 }
 
+function startAd(){
+	if(setup.isStatic){
+		console.log("isStatic");
+		initStaticBG();
+	}else{
+		console.log("isVideoBackground");
+		initVideoBG();
+	}
+	fadeIn(expansionDiv);
+}
+
+function initStaticBG(){
+	staticImage.style.display = "block";
+	videoContainer.style.display = "none";	
+}
+
+function initVideoBG(){
+	staticImage.style.display = "none";
+	videoContainer.style.display = "block";
+	showElements();
+	if(setup.autoPlayVideo){
+		if (setup.autoPlayFrequency>0) {
+			checkAutoPlayFrequency() ? video.play() : video.load();
+		}
+		
+
+	}else{
+		video.load();
+	}
+	if(setup.autoExpand){
+		if (setup.autoExpandFrequency>0) {
+			checkAutoExpandFrequency()==true ? console.log("EXPAND") : console.log("NO_EXPAND");
+		}
+	}
+}
+function checkAutoPlayFrequency(){
+	var itemName = adId+"_autoPlayExpansions";
+	var remainigPlays = localStorage.getItem(itemName);
+	if (remainigPlays > 0 || remainigPlays == null) {
+		remainigPlays = remainigPlays == null ? setup.autoPlayFrequency -1 : remainigPlays-1;
+		localStorage.setItem(itemName,remainigPlays);
+		return true;
+	}else{
+		if (checkCookieDate()==true) {
+			remainigPlays = setup.autoPlayFrequency -1;
+			localStorage.setItem(itemName,remainigPlays);
+			return true;
+		}
+		return false;
+	}
+}
+
+function checkAutoExpandFrequency(){
+	var itemName = adId+"_autoExpansions";
+	var remainingExpansions = localStorage.getItem(itemName);
+	if (remainingExpansions > 0 || remainingExpansions == null) {
+		remainingExpansions = remainingExpansions == null ? setup.autoExpandFrequency -1 : remainingExpansions-1;
+		localStorage.setItem(itemName,remainingExpansions);
+		return true;
+	}else{
+		if (checkCookieDate()==true) {
+			remainingExpansions = setup.autoExpandFrequency -1;
+			localStorage.setItem(itemName,remainingExpansions);
+			return true;
+		}
+		return false;
+	}
+	
+}
+
+function checkCookieDate(){
+	var itemName = adId+"_setDate";
+	var cookieDate = new Date(localStorage.getItem(itemName));
+	var actualDate = new Date();
+	var diff = (actualDate - cookieDate)/(1000*60*60*24);
+	if (diff >= 1) {
+		localStorage.setItem(itemName,actualDate);
+		return true;
+	}else{
+		return false
+	}
+}
 function handleCloseButtonClick()
 {
-	pauseVideo();
+	video.muted = true;
+	fadeOut(closeButton);
+	fadeIn(expandButton);
 	//SEND MESSAGE TO CUSTOM SCRIPT
 	EB._sendMessage("collapseRequest", {});
 }
 function handleExpandButtonClick()
 {
 	//SEND MESSAGE TO CUSTOM SCRIPT
-	EB._sendMessage("expansionRequest", {});
+	fadeIn(closeButton);
+	fadeOut(expandButton);
+	EB._sendMessage("expansionRequest", {topGap:setup.topGap});
 }
 
 function handleClickthroughButtonClick()
@@ -95,6 +191,7 @@ function setControlImage(){
 
 function onVideoEnd(){
 	controlButton.style.background = "url(images/replay.png)";
+	video.load();
 }
 function handleControlsButtonClick() {
 	if(video.paused){
@@ -103,11 +200,32 @@ function handleControlsButtonClick() {
 		video.pause();
 	}
 }
-
+function hideElements(){
+	fadeOut(audioButton);
+	fadeOut(controlButton);
+}
+function showElements(){
+	fadeIn(audioButton);
+	fadeIn(controlButton);
+}
 function pauseVideo(){
 	if(video){
 		video.pause();
 	}
+}
+function fadeIn(elem){
+	elem.style.display = "block";
+    elem.classList.add("fade-in");
+    setTimeout(function(){
+    	elem.classList.remove("fade-in");
+    },1000);
+}
+function fadeOut(elem){
+ 	elem.classList.add("fade-out");   
+    setTimeout(function(){
+    	elem.style.display = "none";
+    	elem.classList.remove("fade-out");
+    },1000);
 }
 
 window.addEventListener("message", handleMessage , false);

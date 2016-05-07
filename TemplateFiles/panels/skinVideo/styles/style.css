@@ -2,13 +2,10 @@
 
 html, body, div, span, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, address, cite, code, del, dfn, em, img, ins, kbd, q, samp, small, strong, sub, sup, var, b, i, hr, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, figure, figcaption, hgroup, menu, footer, header, nav, section, summary, time, mark, audio, video { margin: 0; padding: 0; border: 0; } article, aside, canvas, figure, figure img, figcaption, hgroup, footer, header, nav, section, audio, video { display: block; } a img {border: 0;}
 
-
-/************ 
-TAG STYLES
- ************/
 body {
 	margin: 0px;
 	padding: 0px;
+	background-color: #FFF;
 }
 
 button {
@@ -30,7 +27,8 @@ video {
 }
 
 #expansion{
-	display: block;
+	position: absolute;
+	display: none;
 	width: 100%;
 	height: 100%;
 	top: 0px;
@@ -59,6 +57,17 @@ video {
 	position: absolute;
 	width: 100%;
 	height: 100%;
+	z-index: 20;
+}
+#staticImage {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	background-image: url(../images/static1920x1280.jpg);
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: cover;
+	z-index: 30;
 }
 
 .button{
@@ -70,22 +79,26 @@ video {
 }
 
 #closeButton {
+	display: none;
 	top: 10px;
 	right: 10px;
 	background-image: url(../images/close.png);
 	
 }
 #controlButton{
+	display: none;
 	bottom: 10px;
 	right: 10px;
 	background-image: url(../images/play.png);
 }
 #audioButton{
+	display: none;
 	bottom: 10px;
 	left: 10px;
 	background-image: url(../images/audioOff.png);
 }
 
+/*********UTILS**********/
 .centered {
 	position: absolute;
 	top: 50%;
@@ -107,4 +120,40 @@ video {
 	-webkit-transform: translateX(-50%);
         -ms-transform: translateX(-50%);
             transform: translateX(-50%);
+}
+
+@-webkit-keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+   @-moz-keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+		@keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+@-webkit-keyframes fadeOut { from { opacity:1; } to { opacity:0; } }
+   @-moz-keyframes fadeOut { from { opacity:1; } to { opacity:0; } }
+		@keyframes fadeOut { from { opacity:1; } to { opacity:0; } }
+ 
+.fade-in {
+	opacity:0;
+	-webkit-animation:fadeIn ease-out 1;  /* call our keyframe named fadeIn, use animattion ease-out and repeat it only 1 time */
+	   -moz-animation:fadeIn ease-out 1;
+			animation:fadeIn ease-out 1;
+ 
+	-webkit-animation-fill-mode:forwards;  /* this makes sure that after animation is done we remain at the last keyframe value (opacity: 1)*/
+	   -moz-animation-fill-mode:forwards;
+			animation-fill-mode:forwards;
+ 
+	-webkit-animation-duration:1s;
+	   -moz-animation-duration:1s;
+			animation-duration:1s;
+}
+.fade-out {
+	opacity:1;
+	-webkit-animation:fadeOut ease-out 1;  /* call our keyframe named fadeOut, use animattion ease-out and repeat it only 1 time */
+	   -moz-animation:fadeOut ease-out 1;
+			animation:fadeOut ease-out 1;
+ 
+	-webkit-animation-fill-mode:forwards;  /* this makes sure that after animation is done we remain at the last keyframe value (opacity: 1)*/
+	   -moz-animation-fill-mode:forwards;
+			animation-fill-mode:forwards;
+ 
+	-webkit-animation-duration:1s;
+	   -moz-animation-duration:1s;
+			animation-duration:1s;
 }

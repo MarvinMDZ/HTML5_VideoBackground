@@ -7,6 +7,7 @@
 <link rel="stylesheet" href="styles/style.css"/> 
 <script>EBModulesToLoad = ['Video','EBCMD'];</script>
 <script type="text/javascript" src="https://secure-ds.serving-sys.com/BurstingScript/adKit/adkit.js"></script>
+<script type="text/javascript" src="setup.js"></script>
 <script type="text/javascript" src="scripts/script.js"></script>
 <script>try{EB.initExpansionParams(0, 0, 0, 0);}catch(e){}</script>
 </head> 
@@ -17,8 +18,9 @@
 		<button id="expandButton" class="centeredH"></button>
 		<button id="audioButton" class="button"></button>
 		<button id="controlButton" class="button"></button>
+		<div id="staticImage"></div>
 		<div id="videoContainer">
-			<video id="video" muted poster="images/poster.jpg" class="centered">
+			<video id="video" muted poster="images/static1920x1280.jpg" class="centered">
 				<source src="videos/video.mp4" type="video/mp4">
 			</video>
 		</div>
