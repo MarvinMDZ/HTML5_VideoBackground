@@ -2,10 +2,9 @@
 /************************************************************************************************************
 Script Name: CustomVideoBackground.js
 Version Number: 1.0.0
-Created: 2015-07-27
-Modified: 2015-07-27
+Created: 2016-05-08
+Modified: 2016-05-08
 Author: Javier Egido Alonso | Sizmek Spain
-Based On: PL_ResponsivePushdown_CFV001.js
 Please do not change or remove this versioning information. In case you do need to modify this script, please 
 save the script with a different name so it won't conflict with the naming convention of the original script.
 ************************************************************************************************************/
@@ -16,7 +15,6 @@ function CustomVideoBackground(adConfig) {
 	this.displayWindow.addEventListener("message", this.onMessageReceived, false);
 	this.subscribeToAfterCreateAdEvent();
 	this.subscribeToAfterExpandEvent();
-	this.subscribeToAfterCollapseEvent();
 
 	EBG.callSuperConstructor(CustomVideoBackground, this, [adConfig]);
 }
@@ -38,11 +36,6 @@ CustomVideoBackground.prototype = {
 	subscribeToAfterExpandEvent: function() {
 		this.subscribeToEvent(EBG.Events.EventNames.EXPAND, EBG.Events.EventTiming.AFTER, function(event) {
 			this.handleAfterExpansion(event);
-		});
-	},
-	subscribeToAfterCollapseEvent: function() {
-		this.subscribeToEvent(EBG.Events.EventNames.COLLAPSE, EBG.Events.EventTiming.AFTER, function(event) {
-			this.handleAfterCollapse(event);
 		});
 	},
 	subscribeToEvent: function(eventName, timing, callback) {
@@ -76,8 +69,6 @@ CustomVideoBackground.prototype = {
 		SELF.displayWindow.document.getElementsByTagName("body")[0].appendChild(newStyles);
 	},
 	getBrowserDimension: function() {
-		// var widthW = isNaN(SELF.displayWindow.innerWidth) ? SELF.displayWindow.clientWidth : SELF.displayWindow.innerWidth;
-		// var heightW = isNaN(SELF.displayWindow.innerHeight) ? SELF.displayWindow.clientHeight : SELF.displayWindow.innerHeight;
 		var widthW = SELF.displayWindow.document.body.clientWidth;
 		var heightW = isNaN(SELF.displayWindow.innerHeight) ? SELF.displayWindow.clientHeight : SELF.displayWindow.innerHeight;
 		return {width: widthW, height: heightW};				
@@ -86,7 +77,7 @@ CustomVideoBackground.prototype = {
 	onMessageReceived: function(event) {
 		try {
 			var messageData = JSON.parse(event.data);
-			console.log(messageData);
+			//console.log(messageData);
 			switch(messageData.type){
 				case "ebInitDone":
 					//console.log("ebInitDone",messageData);
@@ -94,13 +85,15 @@ CustomVideoBackground.prototype = {
 				case "ebDocumentLoaded":
 					//console.log("ebInitDone",messageData);
 				break;
+				case "setInfo":
+					SELF.marginTop = messageData.data.topGap;
+					SELF.publisherSetup = messageData.data.publisherSetup;
+				break;
 				case "collapseRequest":
-					console.log("collapseRequest",messageData);
 					SELF.onCollapseRequested();
 				break;
 				case "expansionRequest":
-					console.log("expansionRequest",messageData);
-					SELF.onExpandRequested();
+					SELF.onExpandRequested();			
 				break;
 			}
 
@@ -114,15 +107,12 @@ CustomVideoBackground.prototype = {
 		SELF.adFrm = SELF.adDiv.getElementsByTagName("iframe")[0];
 		SELF.hostDiv = SELF.adDiv.parentNode;
 		
-		
 	   	SELF.displayWindow.addEventListener("resize", function() {
 			SELF.onResize();
 		}, false);
 		SELF.displayWindow.addEventListener("orientationchange", function() {
 			SELF.onResize();
 		}, false);
-
-
 	},
 	handleAfterExpansion: function(event) {
 		try{
@@ -130,15 +120,13 @@ CustomVideoBackground.prototype = {
 			SELF.panelFrm = SELF.displayWindow.document.getElementById(event.dispatcher.iframeId);
 			SELF.panelId = event.dispatcher.props.panel.id;
 			SELF.eyeDiv = SELF.displayWindow.document.getElementById("eyeDiv");
-			
-			var transitionCSS = "#eyeDiv{position:relative!important;margin-top:150px!important;-webkit-transition: margin-top 1s ease-out;transition: margin-top 1s ease-out;}";
+
+			var transitionCSS = "#eyeDiv{position:relative!important;margin-top:"+SELF.marginTop+"px!important;-webkit-transition: margin-top 1s ease-out;transition: margin-top 1s ease-out;}";
 			SELF.insertStyle(transitionCSS);
 
-			var pagefixCSS = "#pagina{position:relative!important;max-width:1024px;margin:0 auto;z-index:99999;}";
-			SELF.insertStyle(pagefixCSS);
+			//var pagefixCSS = "#pagina{position:relative!important;max-width:1024px;margin:0 auto;z-index:99999;}";
+			SELF.insertStyle(SELF.publisherSetup);
 			
-			//document.body.style.overflow = "hidden";
-			//SELF.panelDiv.style.display = "none";
 			var windowSize = SELF.getBrowserDimension();			
 			var obj = {};
 			obj.browserWidth = windowSize.width;
@@ -170,19 +158,6 @@ CustomVideoBackground.prototype = {
 			console.log("ERROR: After Expansion",error);
 		}
 	},
-	handleAfterCreateAd: function(event) {
-		SELF = this;
-		SELF.adDiv = SELF.displayWindow.document.getElementById(SELF._adConfig.placeHolderId);
-		SELF.adFrm = SELF.adDiv.getElementsByTagName("iframe")[0];
-		SELF.hostDiv = SELF.adDiv.parentNode;
-		
-	   	SELF.displayWindow.addEventListener("resize", function() {
-			SELF.onResize();
-		}, false);
-		SELF.displayWindow.addEventListener("orientationchange", function() {
-			SELF.onResize();
-		}, false);
-	},
 	onResize:function(){
 		setTimeout(function(){
 			var windowSize = SELF.getBrowserDimension();			
@@ -213,15 +188,16 @@ CustomVideoBackground.prototype = {
 			});
 		}, 50);
 	},
-	onExpandRequested:function(){
-
-		var windowSize = SELF.getBrowserDimension();			
-		//SELF.eyeDiv.style.marginTop = windowSize.height+"px!important";
-		SELF.eyeDiv.style.setProperty("marginTop", windowSize.height+"px", "important");
-		console.log("onExpandRequested",windowSize.height);
+	onExpandRequested:function(){			
+		//SELF.eyeDiv.style.setProperty("margin-top", SELF.getBrowserDimension().height+"px", "important");
+		SELF.setMarginTop(SELF.getBrowserDimension().height);
 	},
 	onCollapseRequested:function(){
-		SELF.eyeDiv.style.marginTop = "150px!important";
+		//SELF.eyeDiv.style.setProperty("margin-top", "150px", "important");
+		SELF.setMarginTop(SELF.marginTop);
+	},
+	setMarginTop:function(marginTop){
+		SELF.eyeDiv.style.setProperty("margin-top", marginTop+"px", "important");
 	}
 }
 

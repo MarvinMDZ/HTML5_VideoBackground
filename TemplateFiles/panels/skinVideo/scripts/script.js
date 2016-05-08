@@ -47,7 +47,7 @@ function handleMessage(event){
 		switch(obj.type ){
 			case "PAGE_LOAD":
 				if(typeof config == "object" && typeof EB == "object"){
-					EB._sendMessage("setInfo", {});
+					//EB._sendMessage("setInfo",{topGap:setup.topGap,publisherSetup:setup.publisherSetup});
 				}
 			break;
 		
@@ -67,11 +67,10 @@ function handleMessage(event){
 }
 
 function startAd(){
+	EB._sendMessage("setInfo",{topGap:setup.topGap,publisherSetup:setup.publisherSetup});
 	if(setup.isStatic){
-		console.log("isStatic");
 		initStaticBG();
 	}else{
-		console.log("isVideoBackground");
 		initVideoBG();
 	}
 	fadeIn(expansionDiv);
@@ -88,16 +87,14 @@ function initVideoBG(){
 	showElements();
 	if(setup.autoPlayVideo){
 		if (setup.autoPlayFrequency>0) {
-			checkAutoPlayFrequency() ? video.play() : video.load();
+			checkAutoPlayFrequency() ? video.play() : staticImage.style.display = "block";;
 		}
-		
-
 	}else{
-		video.load();
+		staticImage.style.display = "block";;
 	}
 	if(setup.autoExpand){
 		if (setup.autoExpandFrequency>0) {
-			checkAutoExpandFrequency()==true ? console.log("EXPAND") : console.log("NO_EXPAND");
+			checkAutoExpandFrequency()==true ? handleExpandButtonClick() : console.log("No_AutoExpansion");;
 		}
 	}
 }
@@ -153,15 +150,18 @@ function handleCloseButtonClick()
 	video.muted = true;
 	fadeOut(closeButton);
 	fadeIn(expandButton);
-	//SEND MESSAGE TO CUSTOM SCRIPT
 	EB._sendMessage("collapseRequest", {});
 }
 function handleExpandButtonClick()
 {
-	//SEND MESSAGE TO CUSTOM SCRIPT
 	fadeIn(closeButton);
 	fadeOut(expandButton);
-	EB._sendMessage("expansionRequest", {topGap:setup.topGap});
+	EB._sendMessage("expansionRequest",{});
+	if (!setup.isStatic) {
+		fadeOut(staticImage);
+		video.play();
+		controlButton.style.background = "url(images/pause.png)";
+	}
 }
 
 function handleClickthroughButtonClick()
@@ -191,10 +191,14 @@ function setControlImage(){
 
 function onVideoEnd(){
 	controlButton.style.background = "url(images/replay.png)";
-	video.load();
+	fadeIn(staticImage);
+	if(setup.collapseOnVideoEnds){
+		handleCloseButtonClick();
+	}
 }
 function handleControlsButtonClick() {
 	if(video.paused){
+		fadeOut(staticImage);
 		video.play();
 	}else{
 		video.pause();
