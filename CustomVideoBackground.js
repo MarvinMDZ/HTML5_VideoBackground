@@ -76,13 +76,17 @@ CustomVideoBackground.prototype = {
 		SELF.displayWindow.document.getElementsByTagName("body")[0].appendChild(newStyles);
 	},
 	getBrowserDimension: function() {
-		return {width: isNaN(window.innerWidth) ? window.clientWidth : window.innerWidth, height: isNaN(window.innerHeight) ? window.clientHeight : window.innerHeight};				
+		// var widthW = isNaN(SELF.displayWindow.innerWidth) ? SELF.displayWindow.clientWidth : SELF.displayWindow.innerWidth;
+		// var heightW = isNaN(SELF.displayWindow.innerHeight) ? SELF.displayWindow.clientHeight : SELF.displayWindow.innerHeight;
+		var widthW = SELF.displayWindow.document.body.clientWidth;
+		var heightW = isNaN(SELF.displayWindow.innerHeight) ? SELF.displayWindow.clientHeight : SELF.displayWindow.innerHeight;
+		return {width: widthW, height: heightW};				
 	},
 
 	onMessageReceived: function(event) {
 		try {
 			var messageData = JSON.parse(event.data);
-			console.log(messageData.type);
+			console.log(messageData);
 			switch(messageData.type){
 				case "ebInitDone":
 					//console.log("ebInitDone",messageData);
@@ -109,7 +113,7 @@ CustomVideoBackground.prototype = {
 		SELF.adDiv = SELF.displayWindow.document.getElementById(SELF._adConfig.placeHolderId);
 		SELF.adFrm = SELF.adDiv.getElementsByTagName("iframe")[0];
 		SELF.hostDiv = SELF.adDiv.parentNode;
-		SELF.eyeDiv = SELF.displayWindow.document.getElementById("eyeDiv");
+		
 		
 	   	SELF.displayWindow.addEventListener("resize", function() {
 			SELF.onResize();
@@ -117,13 +121,21 @@ CustomVideoBackground.prototype = {
 		SELF.displayWindow.addEventListener("orientationchange", function() {
 			SELF.onResize();
 		}, false);
+
+
 	},
 	handleAfterExpansion: function(event) {
 		try{
-
 			SELF.panelDiv = SELF.displayWindow.document.getElementById(event.dispatcher.props.panel.id);
 			SELF.panelFrm = SELF.displayWindow.document.getElementById(event.dispatcher.iframeId);
 			SELF.panelId = event.dispatcher.props.panel.id;
+			SELF.eyeDiv = SELF.displayWindow.document.getElementById("eyeDiv");
+			
+			var transitionCSS = "#eyeDiv{position:relative!important;margin-top:150px!important;-webkit-transition: margin-top 1s ease-out;transition: margin-top 1s ease-out;}";
+			SELF.insertStyle(transitionCSS);
+
+			var pagefixCSS = "#pagina{position:relative!important;max-width:1024px;margin:0 auto;z-index:99999;}";
+			SELF.insertStyle(pagefixCSS);
 			
 			//document.body.style.overflow = "hidden";
 			//SELF.panelDiv.style.display = "none";
@@ -131,30 +143,29 @@ CustomVideoBackground.prototype = {
 			var obj = {};
 			obj.browserWidth = windowSize.width;
 			obj.browserHeight = windowSize.height;
-			onj.adId = SELF._adConfig.adId;
+			obj.adId = SELF._adConfig.adId;
 			SELF.sendMessageToCreative(	SELF.panelId, {type: "infoAd", data: obj});
 
 			SELF.setStyle(SELF.panelFrm, {
-				position: "absolute",
+				position: "fixed",
 				top:EBG.px(0),
 				left: EBG.px(0),
 				width: EBG.px(windowSize.width),
-				height: EBG.px(obj.browserHeight),
+				height: EBG.px(windowSize.height),
 				fontSize: "0px",
 				whiteSpace: "nowrap",
 				visibility: "visible"
 			});
 			SELF.setStyle(SELF.panelDiv, {
-				position: "absolute",
+				position: "fixed",
 				top:EBG.px(0),
 				left: EBG.px(0),
 				width: EBG.px(windowSize.width),
-				height: EBG.px(obj.browserHeight),
+				height: EBG.px(windowSize.height),
 				fontSize: "0px",
 				whiteSpace: "nowrap",
 				visibility: "visible"
 			});
-
 		}catch(error){
 			console.log("ERROR: After Expansion",error);
 		}
@@ -181,21 +192,21 @@ CustomVideoBackground.prototype = {
 			SELF.sendMessageToCreative(	SELF.panelId, {type: "infoAd", data: obj});
 
 			SELF.setStyle(SELF.panelFrm, {
-				position: "absolute",
+				position: "fixed",
 				top:EBG.px(0),
 				left: EBG.px(0),
-				width: EBG.px(obj.browserWidth),
-				height: EBG.px(obj.browserHeight),
+				width: EBG.px(windowSize.width),
+				height: EBG.px(windowSize.height),
 				fontSize: "0px",
 				whiteSpace: "nowrap",
 				visibility: "visible"
 			});
 			SELF.setStyle(SELF.panelDiv, {
-				position: "absolute",
+				position: "fixed",
 				top:EBG.px(0),
 				left: EBG.px(0),
-				width: EBG.px(obj.browserWidth),
-				height: EBG.px(obj.browserHeight),
+				width: EBG.px(windowSize.width),
+				height: EBG.px(windowSize.height),
 				fontSize: "0px",
 				whiteSpace: "nowrap",
 				visibility: "visible"
@@ -204,9 +215,13 @@ CustomVideoBackground.prototype = {
 	},
 	onExpandRequested:function(){
 
+		var windowSize = SELF.getBrowserDimension();			
+		//SELF.eyeDiv.style.marginTop = windowSize.height+"px!important";
+		SELF.eyeDiv.style.setProperty("marginTop", windowSize.height+"px", "important");
+		console.log("onExpandRequested",windowSize.height);
 	},
 	onCollapseRequested:function(){
-		
+		SELF.eyeDiv.style.marginTop = "150px!important";
 	}
 }
 
