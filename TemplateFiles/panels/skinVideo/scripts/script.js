@@ -1,4 +1,4 @@
-var expansionDiv,closeButton,expandButton,clickthroughButton,videoContainer,staticImage,video,audioButton,controlButton,adId;
+var expansionDiv,closeButton,expandButton,clickthroughButton,videoContainer,staticImage,video,audioButton,controlButton,adId,fadeAnimation;
 
 
 function initializeCreative()
@@ -40,34 +40,34 @@ function initializeCreative()
     
 }
 
-function handleMessage(event){
-	try{
-		var obj = JSON.parse(event.data);
-		//console.log("userPanel:" + obj.type);
-		switch(obj.type ){
-			case "PAGE_LOAD":
-				if(typeof config == "object" && typeof EB == "object"){
-					//EB._sendMessage("setInfo",{topGap:setup.topGap,publisherSetup:setup.publisherSetup});
-				}
-			break;
+//function handleMessage(event){
+// 	try{
+// 		var obj = JSON.parse(event.data);
+// 		//console.log("userPanel:" + obj.type);
+// 		switch(obj.type ){
+// 			case "PAGE_LOAD":
+// 				if(typeof config == "object" && typeof EB == "object"){
+// 					//EB._sendMessage("setInfo",{topGap:setup.topGap,publisherSetup:setup.publisherSetup});
+// 				}
+// 			break;
 		
-			case "infoAd":
-					// var br_w = obj.data.browserWidth;
-					// var br_h = obj.data.browserHeight;
-			break;
+// 			case "infoAd":
+// 					// var br_w = obj.data.browserWidth;
+// 					// var br_h = obj.data.browserHeight;
+// 			break;
 
-			case "expansionRequest":
+// 			case "expansionRequest":
 							
-			break;
-		}
+// 			break;
+// 		}
 				
-	}catch(err){
+// 	}catch(err){
 		
-	}
-}
+// 	}
+// }
 
 function startAd(){
-	EB._sendMessage("setInfo",{topGap:setup.topGap,publisherSetup:setup.publisherSetup});
+	EB._sendMessage("setInfo",{topGap:setup.topGap});
 	if(setup.isStatic){
 		initStaticBG();
 	}else{
@@ -151,6 +151,10 @@ function handleCloseButtonClick()
 	fadeOut(closeButton);
 	fadeIn(expandButton);
 	EB._sendMessage("collapseRequest", {});
+	expandButton.removeEventListener("click", handleExpandButtonClick);
+	setTimeout(function(){
+		expandButton.addEventListener("click", handleExpandButtonClick);
+	},1000);
 }
 function handleExpandButtonClick()
 {
@@ -162,6 +166,10 @@ function handleExpandButtonClick()
 		video.play();
 		controlButton.style.background = "url(images/pause.png)";
 	}
+	closeButton.removeEventListener("click", handleCloseButtonClick);
+	setTimeout(function(){
+		closeButton.addEventListener("click", handleCloseButtonClick);
+	},1000);
 }
 
 function handleClickthroughButtonClick()
@@ -232,4 +240,4 @@ function fadeOut(elem){
     },1000);
 }
 
-window.addEventListener("message", handleMessage , false);
+//window.addEventListener("message", handleMessage , false);

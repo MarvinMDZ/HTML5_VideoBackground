@@ -87,7 +87,7 @@ CustomVideoBackground.prototype = {
 				break;
 				case "setInfo":
 					SELF.marginTop = messageData.data.topGap;
-					SELF.publisherSetup = messageData.data.publisherSetup;
+					//SELF.publisherSetup = messageData.data.publisherSetup;
 				break;
 				case "collapseRequest":
 					SELF.onCollapseRequested();
@@ -113,6 +113,20 @@ CustomVideoBackground.prototype = {
 		SELF.displayWindow.addEventListener("orientationchange", function() {
 			SELF.onResize();
 		}, false);
+		SELF.loadExternalJSON(function(response){
+			var responseJSON = JSON.parse(response);
+			var currentDomain = window.location.hostname;
+
+			for (var i in responseJSON) {
+				if (currentDomain == responseJSON[i]["pubDomain"]) {
+					SELF.publisherSetup = responseJSON[i]["pubFix"];
+				}
+			}
+
+			//var pagefixCSS = "#pagina{position:relative!important;max-width:1024px;margin:0 auto;z-index:99999;}";
+			SELF.insertStyle(SELF.publisherSetup);
+			
+		},"http://services.serving-sys.com/custprojassets/prd/features/feeds/1643/publishersSetup.json");
 	},
 	handleAfterExpansion: function(event) {
 		try{
@@ -123,16 +137,13 @@ CustomVideoBackground.prototype = {
 
 			var transitionCSS = "#eyeDiv{position:relative!important;margin-top:"+SELF.marginTop+"px!important;-webkit-transition: margin-top 1s ease-out;transition: margin-top 1s ease-out;}";
 			SELF.insertStyle(transitionCSS);
-
-			//var pagefixCSS = "#pagina{position:relative!important;max-width:1024px;margin:0 auto;z-index:99999;}";
-			SELF.insertStyle(SELF.publisherSetup);
 			
 			var windowSize = SELF.getBrowserDimension();			
 			var obj = {};
 			obj.browserWidth = windowSize.width;
 			obj.browserHeight = windowSize.height;
 			obj.adId = SELF._adConfig.adId;
-			SELF.sendMessageToCreative(	SELF.panelId, {type: "infoAd", data: obj});
+			//SELF.sendMessageToCreative(	SELF.panelId, {type: "infoAd", data: obj});
 
 			SELF.setStyle(SELF.panelFrm, {
 				position: "fixed",
@@ -164,7 +175,7 @@ CustomVideoBackground.prototype = {
 			var obj = {};
 			obj.browserWidth = windowSize.width;
 			obj.browserHeight = windowSize.height;
-			SELF.sendMessageToCreative(	SELF.panelId, {type: "infoAd", data: obj});
+			//SELF.sendMessageToCreative(	SELF.panelId, {type: "infoAd", data: obj});
 
 			SELF.setStyle(SELF.panelFrm, {
 				position: "fixed",
@@ -198,7 +209,20 @@ CustomVideoBackground.prototype = {
 	},
 	setMarginTop:function(marginTop){
 		SELF.eyeDiv.style.setProperty("margin-top", marginTop+"px", "important");
-	}
+	},
+	loadExternalJSON:function (callback,pathToFile) { 
+		//console.log("loadExternalJSON");
+	    var xobj = new XMLHttpRequest();
+	    xobj.overrideMimeType("application/json");
+	    xobj.open('GET', pathToFile, true); // Replace 'my_data' with the path to your file
+	    xobj.onreadystatechange = function () {
+	          if (xobj.readyState == 4 && xobj.status == "200") {
+	            // Required use of an anonymous callback as .open will NOT return a value but simply returns undefined in asynchronous mode
+	            callback(xobj.responseText);
+	          }
+	    };
+	    xobj.send(null);  
+	 }
 }
 
 function CustomVideoBackgroundHook(adConfig) {

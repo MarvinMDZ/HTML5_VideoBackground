@@ -1,0 +1,12 @@
+{
+	"0":
+	{
+		"pubDomain":"m.eltiempo.es",
+		"pubFix":"#page{position:relative!important;z-index:99999999;}"
+	},
+	"1":
+	{
+		"pubDomain":"www.laopiniondemalaga.es",
+		"pubFix":"#pagina{position:relative!important;max-width:1024px;margin:0 auto;z-index:99999;}"
+	}
+}
