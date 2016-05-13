@@ -139,10 +139,10 @@ CustomVideoBackground.prototype = {
 			SELF.insertStyle(transitionCSS);
 			
 			var windowSize = SELF.getBrowserDimension();			
-			var obj = {};
-			obj.browserWidth = windowSize.width;
-			obj.browserHeight = windowSize.height;
-			obj.adId = SELF._adConfig.adId;
+			// var obj = {};
+			// obj.browserWidth = windowSize.width;
+			// obj.browserHeight = windowSize.height;
+			// obj.adId = SELF._adConfig.adId;
 			//SELF.sendMessageToCreative(	SELF.panelId, {type: "infoAd", data: obj});
 
 			SELF.setStyle(SELF.panelFrm, {
@@ -172,9 +172,10 @@ CustomVideoBackground.prototype = {
 	onResize:function(){
 		setTimeout(function(){
 			var windowSize = SELF.getBrowserDimension();			
-			var obj = {};
-			obj.browserWidth = windowSize.width;
-			obj.browserHeight = windowSize.height;
+			// var obj = {};
+			// obj.browserWidth = windowSize.width;
+			// obj.browserHeight = windowSize.height;
+			SELF.setMarginTop(windowSize.height);
 			//SELF.sendMessageToCreative(	SELF.panelId, {type: "infoAd", data: obj});
 
 			SELF.setStyle(SELF.panelFrm, {

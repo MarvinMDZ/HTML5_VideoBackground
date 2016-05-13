@@ -1,9 +1,8 @@
 var expansionDiv,closeButton,expandButton,clickthroughButton,videoContainer,staticImage,video,audioButton,controlButton,adId,fadeAnimation;
-
+var userAgent = window.navigator.userAgent.toLowerCase(), ios = /iphone|ipod|ipad/.test( userAgent );
 
 function initializeCreative()
 {
-
 	expansionDiv = document.getElementById("expansion");
 	closeButton = document.getElementById("closeButton");
 	expandButton = document.getElementById("expandButton");
@@ -20,7 +19,13 @@ function initializeCreative()
 	expandButton.addEventListener("click", handleExpandButtonClick);
 	clickthroughButton.addEventListener("click", handleClickthroughButtonClick);
 
-	audioButton.addEventListener("click", handleAudioButtonClick);
+	if(ios){
+		audioButton.style.display = "none";
+	}else{
+		audioButton.addEventListener("click", handleAudioButtonClick);	
+	}
+
+	
 	controlButton.addEventListener("click", handleControlsButtonClick);
 	
 	video.addEventListener('play',setControlImage);
@@ -31,40 +36,14 @@ function initializeCreative()
     try{
 		adId = EB._adConfig.adId;
 	}catch(error){
-		adId = "35572581";
+		adId = "LocalTest";
 	}
 	var itemName = adId+"_setDate";
 	localStorage.getItem(itemName,new Date());
 
     startAd();
-    
 }
 
-//function handleMessage(event){
-// 	try{
-// 		var obj = JSON.parse(event.data);
-// 		//console.log("userPanel:" + obj.type);
-// 		switch(obj.type ){
-// 			case "PAGE_LOAD":
-// 				if(typeof config == "object" && typeof EB == "object"){
-// 					//EB._sendMessage("setInfo",{topGap:setup.topGap,publisherSetup:setup.publisherSetup});
-// 				}
-// 			break;
-		
-// 			case "infoAd":
-// 					// var br_w = obj.data.browserWidth;
-// 					// var br_h = obj.data.browserHeight;
-// 			break;
-
-// 			case "expansionRequest":
-							
-// 			break;
-// 		}
-				
-// 	}catch(err){
-		
-// 	}
-// }
 
 function startAd(){
 	EB._sendMessage("setInfo",{topGap:setup.topGap});
@@ -74,6 +53,7 @@ function startAd(){
 		initVideoBG();
 	}
 	fadeIn(expansionDiv);
+	setControlImage();
 }
 
 function initStaticBG(){
@@ -85,16 +65,15 @@ function initVideoBG(){
 	staticImage.style.display = "none";
 	videoContainer.style.display = "block";
 	showElements();
-	if(setup.autoPlayVideo){
-		if (setup.autoPlayFrequency>0) {
-			checkAutoPlayFrequency() ? video.play() : staticImage.style.display = "block";;
-		}
+	if(setup.autoPlayVideo && setup.autoPlayFrequency>0 && checkAutoPlayFrequency() == true){
+		video.play();
+		setControlImage()
 	}else{
-		staticImage.style.display = "block";;
+		staticImage.style.display = "block";
 	}
 	if(setup.autoExpand){
-		if (setup.autoExpandFrequency>0) {
-			checkAutoExpandFrequency()==true ? handleExpandButtonClick() : console.log("No_AutoExpansion");;
+		if (setup.autoExpandFrequency>0 && checkAutoExpandFrequency()==true ) {
+			setTimeout(function(){handleExpandButtonClick();},2500);
 		}
 	}
 }
@@ -161,13 +140,13 @@ function handleExpandButtonClick()
 	fadeIn(closeButton);
 	fadeOut(expandButton);
 	EB._sendMessage("expansionRequest",{});
-	if (!setup.isStatic) {
-		fadeOut(staticImage);
-		video.play();
-		controlButton.style.background = "url(images/pause.png)";
-	}
 	closeButton.removeEventListener("click", handleCloseButtonClick);
 	setTimeout(function(){
+		if (!setup.isStatic) {
+			fadeOut(staticImage);
+			video.play();
+			setControlImage();
+		}
 		closeButton.addEventListener("click", handleCloseButtonClick);
 	},1000);
 }
@@ -194,6 +173,7 @@ function setControlImage(){
 		controlButton.style.background = "url(images/play.png)";
 	}else{
 		controlButton.style.background = "url(images/pause.png)";
+		fadeOut(staticImage);
 	}
 }
 
@@ -211,13 +191,18 @@ function handleControlsButtonClick() {
 	}else{
 		video.pause();
 	}
+	setControlImage();
 }
 function hideElements(){
-	fadeOut(audioButton);
+	if(!ios){
+		fadeOut(audioButton);
+	}
 	fadeOut(controlButton);
 }
 function showElements(){
-	fadeIn(audioButton);
+	if(!ios){
+		fadeIn(audioButton);
+	}
 	fadeIn(controlButton);
 }
 function pauseVideo(){
@@ -239,5 +224,3 @@ function fadeOut(elem){
     	elem.classList.remove("fade-out");
     },1000);
 }
-
-//window.addEventListener("message", handleMessage , false);
