@@ -8,5 +8,25 @@
 	{
 		"pubDomain":"www.laopiniondemalaga.es",
 		"pubFix":"#pagina{position:relative!important;max-width:1024px;margin:0 auto;z-index:99999;}"
+	},
+	"2":
+	{
+		"pubDomain":"www.sport.es",
+		"pubFix":""
+	},
+	"3":
+	{
+		"pubDomain":"www.mundodeportivo.com",
+		"pubFix":""
+	},
+	"4":
+	{
+		"pubDomain":"as.com",
+		"pubFix":""
+	},
+	"5":
+	{
+		"pubDomain":"www.marca.com",
+		"pubFix":""
 	}
 }

@@ -163,22 +163,22 @@ function handleAudioButtonClick() {
 
 function setAudioImage(){
 	if(video.muted){
-		audioButton.style.background = "url(images/audioOff.png)";
+		audioButton.style.backgroundImage = "url(images/audioOff.png)";
 	}else{
-		audioButton.style.background = "url(images/audioOn.png)";
+		audioButton.style.backgroundImage = "url(images/audioOn.png)";
 	}
 }
 function setControlImage(){
 	if(video.paused){
-		controlButton.style.background = "url(images/play.png)";
+		controlButton.style.backgroundImage = "url(images/play.png)";
 	}else{
-		controlButton.style.background = "url(images/pause.png)";
+		controlButton.style.backgroundImage = "url(images/pause.png)";
 		fadeOut(staticImage);
 	}
 }
 
 function onVideoEnd(){
-	controlButton.style.background = "url(images/replay.png)";
+	controlButton.style.backgroundImage = "url(images/replay.png)";
 	fadeIn(staticImage);
 	if(setup.collapseOnVideoEnds){
 		handleCloseButtonClick();
