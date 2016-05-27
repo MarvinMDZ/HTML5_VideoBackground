@@ -11,5 +11,5 @@ function initializeCreative()
 
 function handleExpandButtonClick()
 {
-	EB._sendMessage("expansionRequest", {topGap:setup.topGap,publisherSetup:setup.publisherSetup});
+	EB._sendMessage("expansionRequest");
 }

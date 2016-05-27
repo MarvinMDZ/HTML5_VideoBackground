@@ -39,7 +39,9 @@ function initializeCreative()
 		adId = "LocalTest";
 	}
 	var itemName = adId+"_setDate";
-	localStorage.getItem(itemName,new Date());
+	if (localStorage.getItem(itemName) == null) {
+		localStorage.setItem(itemName,new Date());
+	}
 
     startAd();
 }
@@ -126,6 +128,7 @@ function checkCookieDate(){
 }
 function handleCloseButtonClick()
 {
+	EB.userActionCounter("Collapsed");
 	video.muted = true;
 	fadeOut(closeButton);
 	fadeIn(expandButton);
@@ -137,6 +140,7 @@ function handleCloseButtonClick()
 }
 function handleExpandButtonClick()
 {
+	EB.userActionCounter("Expanded");
 	fadeIn(closeButton);
 	fadeOut(expandButton);
 	EB._sendMessage("expansionRequest",{});
