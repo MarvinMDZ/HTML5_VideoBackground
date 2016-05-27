@@ -128,10 +128,9 @@ function checkCookieDate(){
 function handleCloseButtonClick()
 {
 	EB.userActionCounter("Collapsed");
-	video.muted = true;
 	fadeOut(closeButton);
 	fadeIn(expandButton);
-	if (!setup.muteOnCollapse) {
+	if (setup.muteOnCollapse) {
 		video.muted = true;
 	}
 	EB._sendMessage("collapseRequest", {});
@@ -151,7 +150,7 @@ function handleExpandButtonClick()
 		if (!setup.isStatic) {
 			fadeOut(staticImage);
 			video.play();
-			if (!setup.unmuteOnExpand) {
+			if (setup.unmuteOnExpand) {
 				video.muted = false;
 			}
 			setControlImage();
