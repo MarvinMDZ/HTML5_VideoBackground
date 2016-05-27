@@ -5,5 +5,7 @@ var setup = {
 	autoExpand:false,
 	autoExpandFrequency:1,
 	topGap: 150,
-	collapseOnVideoEnds: true
+	collapseOnVideoEnds: true,
+	unmuteOnExpand: true,
+	muteOnCollapse:true,
 };

@@ -25,7 +25,6 @@ function initializeCreative()
 		audioButton.addEventListener("click", handleAudioButtonClick);	
 	}
 
-	
 	controlButton.addEventListener("click", handleControlsButtonClick);
 	
 	video.addEventListener('play',setControlImage);
@@ -132,6 +131,9 @@ function handleCloseButtonClick()
 	video.muted = true;
 	fadeOut(closeButton);
 	fadeIn(expandButton);
+	if (!setup.muteOnCollapse) {
+		video.muted = true;
+	}
 	EB._sendMessage("collapseRequest", {});
 	expandButton.removeEventListener("click", handleExpandButtonClick);
 	setTimeout(function(){
@@ -149,6 +151,9 @@ function handleExpandButtonClick()
 		if (!setup.isStatic) {
 			fadeOut(staticImage);
 			video.play();
+			if (!setup.unmuteOnExpand) {
+				video.muted = false;
+			}
 			setControlImage();
 		}
 		closeButton.addEventListener("click", handleCloseButtonClick);
