@@ -3,7 +3,7 @@
 Script Name: CustomVideoBackground.js
 Version Number: 1.0.0
 Created: 2016-05-08
-Modified: 2016-05-08
+Modified: 2016-05-26
 Author: Javier Egido Alonso | Sizmek Spain
 Please do not change or remove this versioning information. In case you do need to modify this script, please 
 save the script with a different name so it won't conflict with the naming convention of the original script.
@@ -73,7 +73,6 @@ CustomVideoBackground.prototype = {
 		var heightW = isNaN(SELF.displayWindow.innerHeight) ? SELF.displayWindow.clientHeight : SELF.displayWindow.innerHeight;
 		return {width: widthW, height: heightW};				
 	},
-
 	onMessageReceived: function(event) {
 		try {
 			var messageData = JSON.parse(event.data);
@@ -87,13 +86,14 @@ CustomVideoBackground.prototype = {
 				break;
 				case "setInfo":
 					SELF.marginTop = messageData.data.topGap;
-					//SELF.publisherSetup = messageData.data.publisherSetup;
 				break;
 				case "collapseRequest":
 					SELF.onCollapseRequested();
+					SELF.isExpanded = false;
 				break;
 				case "expansionRequest":
-					SELF.onExpandRequested();			
+					SELF.onExpandRequested();
+					SELF.isExpanded = true;
 				break;
 			}
 
@@ -106,6 +106,7 @@ CustomVideoBackground.prototype = {
 		SELF.adDiv = SELF.displayWindow.document.getElementById(SELF._adConfig.placeHolderId);
 		SELF.adFrm = SELF.adDiv.getElementsByTagName("iframe")[0];
 		SELF.hostDiv = SELF.adDiv.parentNode;
+		SELF.isExpanded = false;
 		
 	   	SELF.displayWindow.addEventListener("resize", function() {
 			SELF.onResize();
@@ -122,8 +123,6 @@ CustomVideoBackground.prototype = {
 					SELF.publisherSetup = responseJSON[i]["pubFix"];
 				}
 			}
-
-			//var pagefixCSS = "#pagina{position:relative!important;max-width:1024px;margin:0 auto;z-index:99999;}";
 			SELF.insertStyle(SELF.publisherSetup);
 			
 		},"http://services.serving-sys.com/custprojassets/prd/features/feeds/1643/publishersSetup.json");
@@ -135,15 +134,10 @@ CustomVideoBackground.prototype = {
 			SELF.panelId = event.dispatcher.props.panel.id;
 			SELF.eyeDiv = SELF.displayWindow.document.getElementById("eyeDiv");
 
-			var transitionCSS = "#eyeDiv{position:relative!important;margin-top:"+SELF.marginTop+"px!important;-webkit-transition: margin-top 1s ease-out;transition: margin-top 1s ease-out;}";
+			var transitionCSS = "#eyeDiv{position:relative!important;margin-top:"+SELF.marginTop+"px!important;-webkit-transition: margin-top 1s ease-out;transition: margin-top 1s ease-out;} #"+event.dispatcher.props.panel.id+"{top:0!important;left:0!important}";
 			SELF.insertStyle(transitionCSS);
 			
-			var windowSize = SELF.getBrowserDimension();			
-			// var obj = {};
-			// obj.browserWidth = windowSize.width;
-			// obj.browserHeight = windowSize.height;
-			// obj.adId = SELF._adConfig.adId;
-			//SELF.sendMessageToCreative(	SELF.panelId, {type: "infoAd", data: obj});
+			var windowSize = SELF.getBrowserDimension();
 
 			SELF.setStyle(SELF.panelFrm, {
 				position: "fixed",
@@ -171,13 +165,10 @@ CustomVideoBackground.prototype = {
 	},
 	onResize:function(){
 		setTimeout(function(){
-			var windowSize = SELF.getBrowserDimension();			
-			// var obj = {};
-			// obj.browserWidth = windowSize.width;
-			// obj.browserHeight = windowSize.height;
-			SELF.setMarginTop(windowSize.height);
-			//SELF.sendMessageToCreative(	SELF.panelId, {type: "infoAd", data: obj});
-
+			var windowSize = SELF.getBrowserDimension();
+			if (SELF.isExpanded == true ) {
+				SELF.setMarginTop(windowSize.height);	
+			}			
 			SELF.setStyle(SELF.panelFrm, {
 				position: "fixed",
 				top:EBG.px(0),
@@ -201,24 +192,20 @@ CustomVideoBackground.prototype = {
 		}, 50);
 	},
 	onExpandRequested:function(){			
-		//SELF.eyeDiv.style.setProperty("margin-top", SELF.getBrowserDimension().height+"px", "important");
 		SELF.setMarginTop(SELF.getBrowserDimension().height);
 	},
 	onCollapseRequested:function(){
-		//SELF.eyeDiv.style.setProperty("margin-top", "150px", "important");
 		SELF.setMarginTop(SELF.marginTop);
 	},
 	setMarginTop:function(marginTop){
 		SELF.eyeDiv.style.setProperty("margin-top", marginTop+"px", "important");
 	},
 	loadExternalJSON:function (callback,pathToFile) { 
-		//console.log("loadExternalJSON");
 	    var xobj = new XMLHttpRequest();
 	    xobj.overrideMimeType("application/json");
-	    xobj.open('GET', pathToFile, true); // Replace 'my_data' with the path to your file
+	    xobj.open('GET', pathToFile, true);
 	    xobj.onreadystatechange = function () {
 	          if (xobj.readyState == 4 && xobj.status == "200") {
-	            // Required use of an anonymous callback as .open will NOT return a value but simply returns undefined in asynchronous mode
 	            callback(xobj.responseText);
 	          }
 	    };

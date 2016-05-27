@@ -2,31 +2,36 @@
 	"0":
 	{
 		"pubDomain":"m.eltiempo.es",
-		"pubFix":"#page{position:relative!important;z-index:99999999;}"
+		"pubFix":"#page{position:relative!important;z-index:99999999;max-width: 1044px;}"
 	},
 	"1":
 	{
-		"pubDomain":"www.laopiniondemalaga.es",
-		"pubFix":"#pagina{position:relative!important;max-width:1024px;margin:0 auto;z-index:99999;}"
+		"pubDomain":"www.eltiempo.es",
+		"pubFix":"#page{position:relative!important;z-index:99999999;max-width: 1044px;}"
 	},
 	"2":
 	{
 		"pubDomain":"www.sport.es",
-		"pubFix":""
+		"pubFix":".head,.container,.footer{position:relative!important;z-index:9999999999;}"
 	},
 	"3":
 	{
 		"pubDomain":"www.mundodeportivo.com",
-		"pubFix":""
+		"pubFix":"header,footer,.main{position:relative!important;z-index:9999999999!important;}"
 	},
 	"4":
 	{
 		"pubDomain":"as.com",
-		"pubFix":""
+		"pubFix":".grid{position:relative!important;z-index:9999999999!important;}"
 	},
 	"5":
 	{
 		"pubDomain":"www.marca.com",
-		"pubFix":""
+		"pubFix":".site-header,.main,.site-footer{position:relative!important;max-width:1024px!important;z-index:999999990!important;margin:0 auto!important;display:block;}.site-header{z-index:999999999!important}"
+	},
+	"6":
+	{
+		"pubDomain":"www.laopiniondemalaga.es",
+		"pubFix":"#pagina{position:relative!important;max-width:1024px;margin:0 auto;z-index:99999;}"
 	}
 }
