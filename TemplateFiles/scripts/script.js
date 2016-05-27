@@ -11,5 +11,6 @@ function initializeCreative()
 
 function handleExpandButtonClick()
 {
-	EB._sendMessage("expansionRequest",{});
+	EB.clickthrough();
+	//EB._sendMessage("expansionRequest",{});
 }
