@@ -95,6 +95,13 @@ CustomVideoBackground.prototype = {
 					SELF.onExpandRequested();
 					SELF.isExpanded = true;
 				break;
+				case "baseExpansionRequest":
+					try{
+						SELF.panelFrm.contentWindow.postMessage(JSON.stringify({type: "baseExpansion", data: {}}), "*");
+					}catch(error){
+						console.log("Error: ",error);
+					}
+				break;
 			}
 
 		} catch(error) {

@@ -232,3 +232,17 @@ function fadeOut(elem){
     	elem.classList.remove("fade-out");
     },1000);
 }
+
+window.addEventListener("message", function(event){
+	try{
+		var obj = JSON.parse(event.data);
+		switch(obj.type ){
+			case "baseExpansion":
+				handleExpandButtonClick();
+			break;
+		}
+				
+	}catch(err){
+		console.log("Error Panel: ", err);
+	}
+}, false);
