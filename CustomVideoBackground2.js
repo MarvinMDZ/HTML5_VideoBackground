@@ -3,7 +3,7 @@
 Script Name: CustomVideoBackground.js
 Version Number: 1.0.0
 Created: 2016-05-08
-Modified: 2016-05-26
+Modified: 2016-05-31
 Author: Javier Egido Alonso | Sizmek Spain
 Please do not change or remove this versioning information. In case you do need to modify this script, please 
 save the script with a different name so it won't conflict with the naming convention of the original script.
@@ -134,11 +134,10 @@ CustomVideoBackground.prototype = {
 			
 		},"http://services.serving-sys.com/custprojassets/prd/features/feeds/1643/publishersSetup.json");
 
-		var pushDiv = document.createElement("div");
-		pushDiv.id = "pushDiv";
-		SELF.eyeDiv = pushDiv;
-		//document.body.insertBefore(pushDiv,document.body.firstChild);
-		SELF.displayWindow.document.body.insertBefore(pushDiv,SELF.displayWindow.document.body.firstChild);
+		var auxElement = document.createElement("div");
+		auxElement.id = "pushDiv";
+		SELF.pushDiv = auxElement;
+		SELF.displayWindow.document.body.insertBefore(auxElement,SELF.displayWindow.document.body.firstChild);
 	},
 	handleAfterExpansion: function(event) {
 		try{
@@ -212,7 +211,7 @@ CustomVideoBackground.prototype = {
 		SELF.setMarginTop(SELF.marginTop);
 	},
 	setMarginTop:function(marginTop){
-		SELF.eyeDiv.style.setProperty("margin-top", marginTop+"px", "important");
+		SELF.pushDiv.style.setProperty("margin-top", marginTop+"px", "important");
 	},
 	loadExternalJSON:function (callback,pathToFile) { 
 	    var xobj = new XMLHttpRequest();
