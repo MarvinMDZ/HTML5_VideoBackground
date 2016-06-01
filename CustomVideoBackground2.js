@@ -66,7 +66,8 @@ CustomVideoBackground.prototype = {
 		var newStyles = SELF.displayWindow.document.createElement("style");
 		newStyles.setAttribute("type", "text/css");
 		newStyles.innerHTML = cssString;
-		SELF.displayWindow.document.getElementsByTagName("body")[0].appendChild(newStyles);
+		//SELF.displayWindow.document.getElementsByTagName("body")[0].appendChild(newStyles);
+		(SELF.displayWindow.document.head||SELF.displayWindow.document.documentElement).appendChild(newStyles);
 	},
 	getBrowserDimension: function() {
 		var widthW = SELF.displayWindow.document.body.clientWidth;
@@ -133,11 +134,6 @@ CustomVideoBackground.prototype = {
 			SELF.insertStyle(SELF.publisherSetup);
 			
 		},"http://services.serving-sys.com/custprojassets/prd/features/feeds/1643/publishersSetup.json");
-
-		var auxElement = document.createElement("div");
-		auxElement.id = "pushDiv";
-		SELF.pushDiv = auxElement;
-		SELF.displayWindow.document.body.insertBefore(auxElement,SELF.displayWindow.document.body.firstChild);
 	},
 	handleAfterExpansion: function(event) {
 		try{
@@ -147,10 +143,26 @@ CustomVideoBackground.prototype = {
 			//SELF.eyeDiv = SELF.displayWindow.document.getElementById("eyeDiv");
 
 			//var transitionCSS = "#eyeDiv{position:relative!important;margin-top:"+SELF.marginTop+"px!important;-webkit-transition: margin-top 1s ease-out;transition: margin-top 1s ease-out;} #"+event.dispatcher.props.panel.id+"{top:0!important;left:0!important}";
-			var transitionCSS = "#pushDiv{position:relative!important;margin-top:"+SELF.marginTop+"px!important;-webkit-transition: margin-top 1s ease-out;transition: margin-top 1s ease-out;} #"+event.dispatcher.props.panel.id+"{top:0!important;left:0!important}";
+			//var transitionCSS = "#pushDiv{position:relative!important;margin-top:"+SELF.marginTop+"px!important;-webkit-transition: margin-top 1s ease-out;transition: margin-top 1s ease-out;} #"+event.dispatcher.props.panel.id+"{top:0!important;left:0!important;}";
+
+			var transitionCSS = "#"+event.dispatcher.props.panel.id+"{top:0!important;left:0!important;}";
 			SELF.insertStyle(transitionCSS);
 			
+			var auxElement = document.createElement("div");
+			auxElement.id = "pushDiv";
+			//SELF.pushDiv = auxElement;
+			SELF.displayWindow.document.body.insertBefore(auxElement,SELF.displayWindow.document.body.firstChild);
+
+			SELF.pushDiv = SELF.displayWindow.document.getElementById("pushDiv");
+
 			var windowSize = SELF.getBrowserDimension();
+
+			SELF.setStyle(SELF.pushDiv, {
+				position: "relative",
+				marginTop: SELF.marginTop+"px",
+				webkitTransition: "margin-top 1s ease-out",
+				transition: "margin-top 1s ease-out;"
+			});
 
 			SELF.setStyle(SELF.panelFrm, {
 				position: "fixed",
