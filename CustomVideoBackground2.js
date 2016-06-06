@@ -70,7 +70,7 @@ CustomVideoBackground.prototype = {
 		(SELF.displayWindow.document.head||SELF.displayWindow.document.documentElement).appendChild(newStyles);
 	},
 	getBrowserDimension: function() {
-		var widthW = SELF.displayWindow.document.body.clientWidth;
+		var widthW = SELF.displayWindow.innerWidth;
 		var heightW = isNaN(SELF.displayWindow.innerHeight) ? SELF.displayWindow.clientHeight : SELF.displayWindow.innerHeight;
 		return {width: widthW, height: heightW};				
 	},
