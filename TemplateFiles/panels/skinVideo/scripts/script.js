@@ -47,7 +47,7 @@ function initializeCreative()
 
 
 function startAd(){
-	EB._sendMessage("setInfo",{topGap:setup.topGap});
+	try{EB._sendMessage("setInfo",{topGap:setup.topGap})}catch(err){};
 	if(setup.isStatic){
 		initStaticBG();
 	}else{
@@ -133,7 +133,12 @@ function handleCloseButtonClick()
 	if (setup.muteOnCollapse) {
 		video.muted = true;
 	}
-	EB._sendMessage("collapseRequest", {});
+	if (setup.pauseOnCollapse) {
+		video.pause();
+	}
+	try{EB._sendMessage("collapseRequest",{});}catch(err){};
+	//EB._sendMessage("collapseRequest", {});
+
 	expandButton.removeEventListener("click", handleExpandButtonClick);
 	setTimeout(function(){
 		expandButton.addEventListener("click", handleExpandButtonClick);
@@ -144,11 +149,15 @@ function handleExpandButtonClick()
 	EB.userActionCounter("Expanded");
 	fadeIn(closeButton);
 	fadeOut(expandButton);
-	EB._sendMessage("expansionRequest",{});
+	try{EB._sendMessage("expansionRequest",{});}catch(err){};
+	//EB._sendMessage("expansionRequest",{});
 	closeButton.removeEventListener("click", handleCloseButtonClick);
 	setTimeout(function(){
 		if (!setup.isStatic) {
 			fadeOut(staticImage);
+			if (setup.restartVideoOnExpand) {
+				video.currentTime = 0;
+			}
 			video.play();
 			if (setup.unmuteOnExpand) {
 				video.muted = false;

@@ -8,4 +8,6 @@ var setup = {
 	collapseOnVideoEnds: true,
 	unmuteOnExpand: true,
 	muteOnCollapse:true,
+	restartVideoOnExpand:false,
+	pauseOnCollapse: false
 };
