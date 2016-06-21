@@ -2,7 +2,7 @@
 
 Plantilla genérica con todo lo necesario para crear formatos tipo VideoBackground utilizando workspaces de Sizmek.
 
-<a href="#" target="_blank"><img src="http://www.sizmek.es/eb/users/javiegido_/__Screenshots/verDemo.png" alt="Ver Demo" width="165" height="44" /></a>
+<a href="http://www.sizmek.es/wiki/formato-videobackground/" target="_blank"> Sigue la guía completa para configurar el formato.</a>
 
 
 ## Descripción
@@ -29,6 +29,8 @@ var setup = {
 	collapseOnVideoEnds: true,
 	unmuteOnExpand: true,
 	muteOnCollapse:true,
+	restartVideoOnExpand:false,
+	pauseOnCollapse: false
 };
 ```
 Es posible hacer que el formato se expanda realizando la llamada desde la base. Simplemente habria que realizar la siguiente llamada para que se recoja la expansion desde el panel del skin de video.
@@ -41,15 +43,7 @@ EB._sendMessage("baseExpansionRequest", {});
 
 Cuando tengas terminada la creatividad, sube la pieza a la plataforma. En este caso, el formato que debes seleccionar en la plataforma es **HTML5 EXPANDABLE BANNER**. ¿No tienes claro cómo? Puedes seguir esta pequeña guia [Subir Creatividades Sizmek](http://www.sizmek.es/wiki/subir-creatividades-html5/).
 
-Configura tu creatividad como se indica en la imagen:
-
-![Video Background Setup]()
-
-Este formato necesita el siguiente JS en la configuración de la plataforma, si no sabes como hacerlo o no tienes los permisos pídeselo al equipo de Sizmek.
-
-```
-www.sizmek.es/eb/users/javiegido_/__TESTS/CustomVideoBackground2.js
-```
+Este formato necesita un script en la configuración de la plataforma, pídele al equipo de Sizmek que te lo configure.
 
 Recuerda que si tienes cualquier duda puedes ponerte en contacto con el equipo de <a href="mailto:creativesupport-spain@sizmek.com">Soporte Creativo de Sizmek</a>
 
