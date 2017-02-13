@@ -38,7 +38,7 @@ function initializeCreative()
 		adId = "LocalTest";
 	}
 	var itemName = adId+"_setDate";
-	if (localStorage.getItem(itemName) == null) {
+	if (localStorage.getItem(itemName) === null) {
 		localStorage.setItem(itemName,new Date());
 	}
 
@@ -47,7 +47,7 @@ function initializeCreative()
 
 
 function startAd(){
-	try{EB._sendMessage("setInfo",{topGap:setup.topGap})}catch(err){};
+	try{EB._sendMessage("setInfo",{topGap:setup.topGap});}catch(err){}
 	if(setup.isStatic){
 		initStaticBG();
 	}else{
@@ -66,14 +66,14 @@ function initVideoBG(){
 	staticImage.style.display = "none";
 	videoContainer.style.display = "block";
 	showElements();
-	if(setup.autoPlayVideo && setup.autoPlayFrequency>0 && checkAutoPlayFrequency() == true){
+	if(setup.autoPlayVideo && setup.autoPlayFrequency>0 && checkAutoPlayFrequency() === true){
 		video.play();
-		setControlImage()
+		setControlImage();
 	}else{
 		staticImage.style.display = "block";
 	}
 	if(setup.autoExpand){
-		if (setup.autoExpandFrequency>0 && checkAutoExpandFrequency()==true ) {
+		if (setup.autoExpandFrequency>0 && checkAutoExpandFrequency()===true ) {
 			setTimeout(function(){handleExpandButtonClick();},2500);
 		}
 	}
@@ -81,12 +81,12 @@ function initVideoBG(){
 function checkAutoPlayFrequency(){
 	var itemName = adId+"_autoPlayExpansions";
 	var remainigPlays = localStorage.getItem(itemName);
-	if (remainigPlays > 0 || remainigPlays == null) {
-		remainigPlays = remainigPlays == null ? setup.autoPlayFrequency -1 : remainigPlays-1;
+	if (remainigPlays > 0 || remainigPlays === null) {
+		remainigPlays = remainigPlays === null ? setup.autoPlayFrequency -1 : remainigPlays-1;
 		localStorage.setItem(itemName,remainigPlays);
 		return true;
 	}else{
-		if (checkCookieDate()==true) {
+		if (checkCookieDate()===true) {
 			remainigPlays = setup.autoPlayFrequency -1;
 			localStorage.setItem(itemName,remainigPlays);
 			return true;
@@ -98,12 +98,12 @@ function checkAutoPlayFrequency(){
 function checkAutoExpandFrequency(){
 	var itemName = adId+"_autoExpansions";
 	var remainingExpansions = localStorage.getItem(itemName);
-	if (remainingExpansions > 0 || remainingExpansions == null) {
-		remainingExpansions = remainingExpansions == null ? setup.autoExpandFrequency -1 : remainingExpansions-1;
+	if (remainingExpansions > 0 || remainingExpansions === null) {
+		remainingExpansions = remainingExpansions === null ? setup.autoExpandFrequency -1 : remainingExpansions-1;
 		localStorage.setItem(itemName,remainingExpansions);
 		return true;
 	}else{
-		if (checkCookieDate()==true) {
+		if (checkCookieDate()===true) {
 			remainingExpansions = setup.autoExpandFrequency -1;
 			localStorage.setItem(itemName,remainingExpansions);
 			return true;
@@ -122,7 +122,7 @@ function checkCookieDate(){
 		localStorage.setItem(itemName,actualDate);
 		return true;
 	}else{
-		return false
+		return false;
 	}
 }
 function handleCloseButtonClick()
@@ -136,8 +136,7 @@ function handleCloseButtonClick()
 	if (setup.pauseOnCollapse) {
 		video.pause();
 	}
-	try{EB._sendMessage("collapseRequest",{});}catch(err){};
-	//EB._sendMessage("collapseRequest", {});
+	try{EB._sendMessage("collapseRequest",{});}catch(err){}
 
 	expandButton.removeEventListener("click", handleExpandButtonClick);
 	setTimeout(function(){
@@ -149,8 +148,8 @@ function handleExpandButtonClick()
 	EB.userActionCounter("Expanded");
 	fadeIn(closeButton);
 	fadeOut(expandButton);
-	try{EB._sendMessage("expansionRequest",{});}catch(err){};
-	//EB._sendMessage("expansionRequest",{});
+	try{EB._sendMessage("expansionRequest",{});}catch(err){}
+
 	closeButton.removeEventListener("click", handleCloseButtonClick);
 	setTimeout(function(){
 		if (!setup.isStatic) {
@@ -245,7 +244,7 @@ function fadeOut(elem){
 window.addEventListener("message", function(event){
 	try{
 		var obj = JSON.parse(event.data);
-		switch(obj.type ){
+		switch(obj.type){
 			case "baseExpansion":
 				handleExpandButtonClick();
 			break;

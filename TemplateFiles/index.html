@@ -6,15 +6,32 @@
 <title>HTML5 VideoBackground 3.0</title>
 <link rel="stylesheet" href="styles/style.css"/>
 <script>EBModulesToLoad = ['EBCMD'];</script>
-<script type="text/javascript" src="https://secure-ds.serving-sys.com/BurstingScript/adKit/adkit.js"></script>
+<script type="text/javascript" src="http://ds.serving-sys.com/BurstingScript/adKit/adkit.js"></script>
 <script type="text/javascript" src="panels/skinVideo/setup.js"></script>
-<script type="text/javascript" src="scripts/script.js"></script>
+<script type="text/javascript">
+
+	//var creativeVersion = "1.0.0";
+	//var creativeLastModified = "2015-10-29";
+
+	var expandButton;
+
+	function initializeCreative()
+	{
+		expandButton = document.getElementById("expandButton");
+		expandButton.addEventListener("click", handleExpandButtonClick);
+	}
+
+	function handleExpandButtonClick()
+	{
+		EB.clickthrough();
+		//EB._sendMessage("baseExpansionRequest", {});
+	}
+
+</script>
 </head> 
 <body>
 	<div id="banner">
-		<div class="buttons">
-			<button id="expandButton"></button>
-		</div>
+		<button id="expandButton"></button>
 	</div>
 	<script>adkit.onReady(initializeCreative);</script>   <!-- !!!!!!!! NO ELIMINAR !!!!!!!! -->
 </body> 
