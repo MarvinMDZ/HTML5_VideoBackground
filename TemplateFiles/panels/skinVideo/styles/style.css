@@ -21,7 +21,7 @@ button {
 video {
 	height: 100%;
 	width: 100%;
-	object-fit: contain;
+	object-fit: cover;
 }
 
 #expansion{
@@ -63,7 +63,7 @@ video {
 	position: absolute;
 	width: 100%;
 	height: 100%;
-	background-image: url(../images/static1920x1280.jpg);
+	background-image: url(../images/static1920x1080.jpg);
 	background-repeat: no-repeat;
 	background-position: center;
 	background-size: cover;
