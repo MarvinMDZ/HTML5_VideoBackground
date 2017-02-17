@@ -63,6 +63,10 @@ function initStaticBG(){
 }
 
 function initVideoBG(){
+	var source = document.createElement('source');
+	source.setAttribute('src', 'videos/video.mp4');
+	video.appendChild(source);
+
 	staticImage.style.display = "none";
 	videoContainer.style.display = "block";
 	showElements();
