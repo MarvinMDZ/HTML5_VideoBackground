@@ -4,39 +4,23 @@ var userAgent = window.navigator.userAgent.toLowerCase(), ios = /iphone|ipod|ipa
 function initializeCreative()
 {
 	expansionDiv = document.getElementById("expansion");
+	videoContainer = document.getElementById("videoContainer");
 	closeButton = document.getElementById("closeButton");
 	expandButton = document.getElementById("expandButton");
-	audioButton = document.getElementById("audioButton");
-	controlButton = document.getElementById("controlButton");
+	
 	clickthroughButton = document.getElementById("clickthroughButton");
 	staticImage = document.getElementById("staticImage");
-	videoContainer = document.getElementById("videoContainer");
-	video = document.getElementById("video");
-
-	var videoTrackingModule = new EBG.VideoModule(video);
 
 	closeButton.addEventListener("click", handleCloseButtonClick);
 	expandButton.addEventListener("click", handleExpandButtonClick);
 	clickthroughButton.addEventListener("click", handleClickthroughButtonClick);
-
-	if(ios){
-		audioButton.style.display = "none";
-	}else{
-		audioButton.addEventListener("click", handleAudioButtonClick);	
-	}
-
-	controlButton.addEventListener("click", handleControlsButtonClick);
-	
-	video.addEventListener('play',setControlImage);
-    video.addEventListener('pause',setControlImage);
-    video.addEventListener('ended',onVideoEnd);
-    video.addEventListener('volumechange',setAudioImage);
 
     try{
 		adId = EB._adConfig.adId;
 	}catch(error){
 		adId = "LocalTest";
 	}
+
 	var itemName = adId+"_setDate";
 	if (localStorage.getItem(itemName) === null) {
 		localStorage.setItem(itemName,new Date());
@@ -54,7 +38,6 @@ function startAd(){
 		initVideoBG();
 	}
 	fadeIn(expansionDiv);
-	setControlImage();
 }
 
 function initStaticBG(){
@@ -63,9 +46,33 @@ function initStaticBG(){
 }
 
 function initVideoBG(){
+
 	var source = document.createElement('source');
+
+	audioButton = document.getElementById("audioButton");
+	controlButton = document.getElementById("controlButton");
+	video = document.getElementById("video");
+
+	var videoTrackingModule = new EBG.VideoModule(video);
+
+	controlButton.addEventListener("click", handleControlsButtonClick);
+	
+	video.addEventListener('play',setControlImage);
+    video.addEventListener('pause',setControlImage);
+    video.addEventListener('ended',onVideoEnd);
+    video.addEventListener('volumechange',setAudioImage);
+
+    setAudioImage();
+    setControlImage();
+
 	source.setAttribute('src', 'videos/video.mp4');
 	video.appendChild(source);
+
+	if(ios){
+		audioButton.style.display = "none";
+	}else{
+		audioButton.addEventListener("click", handleAudioButtonClick);	
+	}
 
 	staticImage.style.display = "none";
 	videoContainer.style.display = "block";
@@ -134,10 +141,10 @@ function handleCloseButtonClick()
 	EB.userActionCounter("Collapsed");
 	fadeOut(closeButton);
 	fadeIn(expandButton);
-	if (setup.muteOnCollapse) {
+	if (setup.muteOnCollapse && !setup.isStatic) {
 		video.muted = true;
 	}
-	if (setup.pauseOnCollapse) {
+	if (setup.pauseOnCollapse && !setup.isStatic) {
 		video.pause();
 	}
 	try{EB._sendMessage("collapseRequest",{});}catch(err){}
@@ -173,7 +180,7 @@ function handleExpandButtonClick()
 
 function handleClickthroughButtonClick()
 {
-	pauseVideo();
+	if(!setup.isStatic){pauseVideo()};
 	EB.clickthrough();
 }
 
